@@ -59,7 +59,10 @@ public class Driver {
 		int slot = 0;
 		int tag = 0;
 		int offset=0;
+		boolean skip = false;
 		String HexAddressFull;
+		
+		try{
 
 		System.out.println("Enter address");
 		HexAddressFull = kb.nextLine();
@@ -90,10 +93,17 @@ public class Driver {
 			String OffsetTemp = "0x" + HexAddressFull.substring(2,3);
 			offset = Integer.decode(OffsetTemp);
 		};
-
+		
+		}catch (Exception e){
+			System.out.println("Invalid.");
+			skip = true;
+		};
+		
+		
+		if (!skip){
 		if (Cache[slot].tag != tag || Cache[slot].valid == 0 ){ // GET MEMORY AND MISS ALGO
 			missCount ++;
-			System.out.println("Miss. Total: " + missCount);
+			System.out.println("Miss. Total Misses: " + missCount);
 
 			String beginFetchMemAddress = "0x" + Integer.toHexString(tag) + Integer.toHexString(slot) + "0";
 			int fetchMemAddress = Integer.decode(beginFetchMemAddress);
@@ -109,9 +119,10 @@ public class Driver {
 		}
 		else if (Cache[slot].tag == tag && Cache[slot].valid == 1){ // CACHE HIT
 			hitCount++;
-			System.out.println("Hit. Total: " + hitCount);
+			System.out.println("Hit. Total Hits: " + hitCount);
 		}
 		showCache();
+		}
 	}
 
 	private static void readByte(String HexAddressFull, byte valueToMem){
@@ -243,9 +254,10 @@ public class Driver {
 			for (int k = 0; k < 16; k++){
 
 				if (Cache[i].data[k] < 0){
-					int tempO = Cache[i].data[k] & 0xff;
+			int tempO = Cache[i].data[k] & 0xff;
 					System.out.print(Integer.toHexString(tempO).toUpperCase() + " ");
 					if (Integer.toHexString(Cache[i].data[k]).length() <2 ) System.out.print(" ");
+					
 				}
 				else{
 					System.out.print(Integer.toHexString(Cache[i].data[k]).toUpperCase() + " ");
