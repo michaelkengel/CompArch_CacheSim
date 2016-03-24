@@ -1,13 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class Driver {
 
@@ -103,7 +99,11 @@ public class Driver {
 		if (!skip){
 		if (Cache[slot].tag != tag || Cache[slot].valid == 0 ){ // GET MEMORY AND MISS ALGO
 			missCount ++;
-			System.out.println("Miss. Total Misses: " + missCount);
+			if (Cache[slot].data[offset] < 0){
+				System.out.println("At that byte there is value " + Integer.toHexString(Cache[slot].data[offset] & 0xff)+ " [Cache Miss]");
+			}
+			else
+			System.out.println("At that byte there is value " + Integer.toHexString(Cache[slot].data[offset])  + " [Cache Miss]");
 
 			String beginFetchMemAddress = "0x" + Integer.toHexString(tag) + Integer.toHexString(slot) + "0";
 			int fetchMemAddress = Integer.decode(beginFetchMemAddress);
@@ -119,9 +119,12 @@ public class Driver {
 		}
 		else if (Cache[slot].tag == tag && Cache[slot].valid == 1){ // CACHE HIT
 			hitCount++;
-			System.out.println("Hit. Total Hits: " + hitCount);
+			if (Cache[slot].data[offset] < 0){
+				System.out.println("At that byte there is value " + Integer.toHexString(Cache[slot].data[offset] & 0xff)+ " [Cache Hit]");
+			}
+			else
+				System.out.println("At that byte there is value " + Integer.toHexString(Cache[slot].data[offset])  + " [Cache Hit]");
 		}
-		showCache();
 		}
 	}
 
@@ -157,7 +160,9 @@ public class Driver {
 
 		if (Cache[slot].tag != tag || Cache[slot].valid == 0 ){ // GET MEMORY AND MISS ALGO
 			missCount ++;
-			System.out.println("Miss. Total: " + missCount);
+			System.out.println("[Cache Miss]");
+			
+			
 
 			/// Fetch Main mem		
 
@@ -172,7 +177,7 @@ public class Driver {
 		}
 		else if (Cache[slot].tag == tag && Cache[slot].valid == 1){ // CACHE HIT
 			hitCount++;
-			System.out.println("Hit. Total: " + hitCount);
+			System.out.println("[Cache Hit]");
 		}
 
 		// Place into Cache and write back back to mem
@@ -180,7 +185,6 @@ public class Driver {
 
 		Cache[slot].data[offset] = valueToMem;
 		MainMem[fetchMemAddress] = valueToMem;		
-		showCache();
 	}
 
 	private static void writeData(){
